@@ -17,4 +17,9 @@ public interface RuanganRepository extends JpaRepository<Ruangan, Long> {
 
     // Cari ruangan berdasarkan zona
     List<Ruangan> findByZona(String zona);
+
+    // Cari ruangan berdasarkan lantai
+    List<Ruangan> findByLantai(Integer lantai);
+
+
 }

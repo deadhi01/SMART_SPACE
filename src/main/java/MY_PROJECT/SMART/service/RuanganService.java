@@ -45,6 +45,11 @@ public class RuanganService {
         return ruanganRepository.save(ruangan);
     }
 
+    // GET ruangan by lantai
+    public List<Ruangan> getRuanganByLantai(Integer lantai) {
+        return ruanganRepository.findByLantai(lantai);
+    }
+
     // PUT update ruangan
     public Ruangan updateRuangan(Long id, Ruangan ruanganBaru) {
         Ruangan ruangan = getRuanganById(id);

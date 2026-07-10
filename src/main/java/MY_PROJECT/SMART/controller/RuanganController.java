@@ -108,6 +108,25 @@ public class RuanganController {
         }
     }
 
+    // ⭐ GET ruangan by lantai (WAJIB TOKEN) ⭐
+    @GetMapping("/lantai/{lantai}")
+    public ResponseEntity<?> getRuanganByLantai(
+            @PathVariable Integer lantai,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            String username = jwtService.extractUsername(token);
+            if (!jwtService.validateToken(token, username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("{\"error\": \"Token tidak valid\"}");
+            }
+            return ResponseEntity.ok(ruanganService.getRuanganByLantai(lantai));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
     // ==================== POST ====================
 
     // POST tambah ruangan (WAJIB TOKEN)
