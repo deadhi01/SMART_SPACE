@@ -6,6 +6,8 @@ import MY_PROJECT.SMART.security.AuthResponse;
 import MY_PROJECT.SMART.security.JwtService;
 import MY_PROJECT.SMART.service.UserService;
 import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,14 +37,16 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         try {
-            // Validasi username & password
             User user = userService.loginUser(request.getUsername(), request.getPassword());
-
-            // Generate JWT token
             String token = jwtService.generateToken(user.getUsername());
 
-            // Kirim token ke client
-            return ResponseEntity.ok(new AuthResponse(token, user.getUsername()));
+            // Kirim token + username + role
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("username", user.getUsername());
+            response.put("role", user.getRole());  // ⭐ TAMBAHKAN INI!
+
+            return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("{\"error\": \"" + e.getMessage() + "\"}");
