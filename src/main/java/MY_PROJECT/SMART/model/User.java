@@ -24,6 +24,9 @@ public class User {
     @Column(nullable = false)
     private String password;  // Akan di-hash pake BCrypt
 
+    @Column(nullable = false)
+    private String role ="MAHASISWA";
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -41,3 +44,5 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 }
+
+//kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
