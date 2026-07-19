@@ -1,9 +1,12 @@
 package MY_PROJECT.SMART.config;
 
 import MY_PROJECT.SMART.model.Ruangan;
+import MY_PROJECT.SMART.model.User;
 import MY_PROJECT.SMART.repository.RuanganRepository;
+import MY_PROJECT.SMART.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -14,10 +17,48 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final RuanganRepository ruanganRepository;
+    private final UserRepository userRepository; // Tambahkan ini
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void run(String... args) throws Exception {
-        // Cek apakah data sudah ada
+
+        // =========================================================
+        // 1. SEEDING USER (Admin, Mahasiswa, Organisasi)
+        // =========================================================
+        if (userRepository.count() == 0) {
+            System.out.println("🌱 Seeding data user...");
+
+            // 1. Admin
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole("ADMIN");
+            userRepository.save(admin);
+
+            // 2. Mahasiswa (Tidak bisa booking)
+            User mahasiswa = new User();
+            mahasiswa.setUsername("budi123");
+            mahasiswa.setPassword(passwordEncoder.encode("rahasia123"));
+            mahasiswa.setRole("MAHASISWA");
+            userRepository.save(mahasiswa);
+
+            // 3. Organisasi (Bisa booking)
+            User organisasi = new User();
+            organisasi.setUsername("himakom");
+            organisasi.setPassword(passwordEncoder.encode("himakom123"));
+            organisasi.setRole("ORGANISASI");
+            userRepository.save(organisasi);
+
+            System.out.println("✅ User berhasil di-seed: admin (ADMIN), budi123 (MAHASISWA), himakom (ORGANISASI)");
+        } else {
+            System.out.println("✅ Data user sudah ada, skip seeder.");
+        }
+
+
+        // =========================================================
+        // 2. SEEDING RUANGAN (Zona B Lantai 2)
+        // =========================================================
         if (ruanganRepository.count() > 0) {
             System.out.println("✅ Data ruangan sudah ada, skip seeder.");
             return;
