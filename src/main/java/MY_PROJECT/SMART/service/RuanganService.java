@@ -1,9 +1,15 @@
 package MY_PROJECT.SMART.service;
 
+import MY_PROJECT.SMART.model.Peminjaman;
 import MY_PROJECT.SMART.model.Ruangan;
+import MY_PROJECT.SMART.repository.PeminjamanRepository;
 import MY_PROJECT.SMART.repository.RuanganRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.List;
 
@@ -12,6 +18,7 @@ import java.util.List;
 public class RuanganService {
 
     private final RuanganRepository ruanganRepository;
+    private final PeminjamanRepository peminjamanRepository;
 
     // GET semua ruangan
     public List<Ruangan> getAllRuangan() {
@@ -60,6 +67,22 @@ public class RuanganService {
         ruangan.setFasilitas(ruanganBaru.getFasilitas());
         ruangan.setKapasitas(ruanganBaru.getKapasitas());
         return ruanganRepository.save(ruangan);
+    }
+
+    // Cek ketersediaan ruangan
+    public boolean cekKetersediaan(Long ruanganId, LocalDate tanggal, LocalTime jamMulai, LocalTime jamSelesai) {
+        // Cek apakah ada peminjaman yang APPROVED atau PENDING di waktu yang sama
+        List<Peminjaman> peminjamanList = peminjamanRepository.findByRuanganIdAndTanggal(ruanganId, tanggal);
+
+        for (Peminjaman p : peminjamanList) {
+            if (p.getStatus().equals("APPROVED") || p.getStatus().equals("PENDING")) {
+                boolean isOverlap = !(jamSelesai.isBefore(p.getJamMulai()) || jamMulai.isAfter(p.getJamSelesai()));
+                if (isOverlap) {
+                    return false; // Ruangan tidak tersedia
+                }
+            }
+        }
+        return true; // Ruangan tersedia
     }
 
     // DELETE ruangan

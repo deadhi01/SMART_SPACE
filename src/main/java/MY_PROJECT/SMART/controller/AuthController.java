@@ -44,7 +44,7 @@ public class AuthController {
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
             response.put("username", user.getUsername());
-            response.put("role", user.getRole());  // ⭐ TAMBAHKAN INI!
+            response.put("role", user.getRole());  // ⭐ INI YANG DITAMBAH
 
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {

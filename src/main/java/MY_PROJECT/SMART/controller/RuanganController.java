@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.List;
 
@@ -183,6 +187,45 @@ public class RuanganController {
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+    // GET cek ketersediaan ruangan (WAJIB TOKEN)
+    @GetMapping("/{id}/ketersediaan")
+    public ResponseEntity<?> cekKetersediaan(
+            @PathVariable Long id,
+            @RequestParam String tanggal,
+            @RequestParam String jamMulai,
+            @RequestParam String jamSelesai,
+            @RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7);
+            String username = jwtService.extractUsername(token);
+            if (!jwtService.validateToken(token, username)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body("{\"error\": \"Token tidak valid\"}");
+            }
+
+            // Parse tanggal & jam
+            LocalDate tanggalParsed = LocalDate.parse(tanggal);
+            LocalTime jamMulaiParsed = LocalTime.parse(jamMulai);
+            LocalTime jamSelesaiParsed = LocalTime.parse(jamSelesai);
+
+            // Cek apakah ruangan tersedia
+            boolean tersedia = ruanganService.cekKetersediaan(id, tanggalParsed, jamMulaiParsed, jamSelesaiParsed);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("ruanganId", id);
+            response.put("tanggal", tanggal);
+            response.put("jamMulai", jamMulai);
+            response.put("jamSelesai", jamSelesai);
+            response.put("tersedia", tersedia);
+            response.put("message", tersedia ? "Ruangan tersedia!" : "Ruangan sudah dipinjam di jam tersebut!");
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }

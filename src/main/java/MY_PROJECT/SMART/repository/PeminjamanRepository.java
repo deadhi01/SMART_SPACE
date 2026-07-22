@@ -19,4 +19,6 @@ public interface PeminjamanRepository extends JpaRepository<Peminjaman, Long> {
 
     // Cari peminjaman berdasarkan ruangan ID dan tanggal
     List<Peminjaman> findByRuanganIdAndTanggal(Long ruanganId, LocalDate tanggal);
+
+
 }
