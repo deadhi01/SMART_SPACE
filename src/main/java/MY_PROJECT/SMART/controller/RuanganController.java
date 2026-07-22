@@ -3,6 +3,7 @@ package MY_PROJECT.SMART.controller;
 import MY_PROJECT.SMART.model.Ruangan;
 import MY_PROJECT.SMART.security.JwtService;
 import MY_PROJECT.SMART.service.RuanganService;
+import MY_PROJECT.SMART.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class RuanganController {
 
     private final RuanganService ruanganService;
     private final JwtService jwtService;
+    private final UserService userService;
 
     // ==================== GET ====================
 
@@ -143,6 +145,13 @@ public class RuanganController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("{\"error\": \"Token tidak valid\"}");
             }
+
+            //Cek Role Admin!
+            if (!userService.isAdmin(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"Hanya admin yang bisa menambah ruangan\"}");
+
+            }
             Ruangan newRuangan = ruanganService.createRuangan(ruangan);
             return ResponseEntity.status(HttpStatus.CREATED).body(newRuangan);
         } catch (Exception e) {
@@ -163,6 +172,12 @@ public class RuanganController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("{\"error\": \"Token tidak valid\"}");
             }
+
+            //Cek Role Admin!
+            if (!userService.isAdmin(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"Hanya admin yang bisa mengedit ruangan\"}");
+            }
             Ruangan updatedRuangan = ruanganService.updateRuangan(id, ruangan);
             return ResponseEntity.ok(updatedRuangan);
         } catch (RuntimeException e) {
@@ -182,6 +197,12 @@ public class RuanganController {
             if (!jwtService.validateToken(token, username)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("{\"error\": \"Token tidak valid\"}");
+            }
+
+            //Cek Role Admin!
+            if (!userService.isAdmin(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"Hanya admin yang bisa menghapus ruangan\"}");
             }
             ruanganService.deleteRuangan(id);
             return ResponseEntity.noContent().build();

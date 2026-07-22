@@ -32,12 +32,22 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
     }
 
+    //Cek apakah user adalah admin
+    @SuppressWarnings("UnusedReturnValue")
+    public boolean isAdmin(String username) {
+        User user = getUserByUsername(username);
+        return "ADMIN".equals(user.getRole());
+    }
+
     // REGISTER
     public User registerUser(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username sudah terdaftar!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("MAHASISWA");
+        }
         return userRepository.save(user);
     }
 
@@ -58,6 +68,9 @@ public class UserService {
             throw new RuntimeException("Username sudah terdaftar!");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("MAHASISWA");
+        }
         return userRepository.save(user);
     }
 

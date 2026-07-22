@@ -3,10 +3,12 @@ package MY_PROJECT.SMART.controller;
 import MY_PROJECT.SMART.model.Peminjaman;
 import MY_PROJECT.SMART.security.JwtService;
 import MY_PROJECT.SMART.service.PeminjamanService;
+import MY_PROJECT.SMART.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,6 +20,7 @@ public class PeminjamanController {
 
     private final PeminjamanService peminjamanService;
     private final JwtService jwtService;
+    private final UserService userService;
 
     // ==================== POST ====================
 
@@ -87,6 +90,12 @@ public class PeminjamanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("{\"error\": \"Token tidak valid\"}");
             }
+            // CEK ROLE ADMIN!
+            if (!userService.isAdmin(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"Hanya admin yang bisa melihat semua peminjaman\"}");
+            }
+
             return ResponseEntity.ok(peminjamanService.getAllPeminjaman());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -143,6 +152,13 @@ public class PeminjamanController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body("{\"error\": \"Token tidak valid\"}");
             }
+
+            //Cek Role Admin!
+            if (!userService.isAdmin(username)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("{\"error\": \"Hanya admin yang bisa approve/reject\"}");
+            }
+
             Peminjaman peminjaman = peminjamanService.updateStatusPeminjaman(id, status);
             return ResponseEntity.ok(peminjaman);
         } catch (RuntimeException e) {
