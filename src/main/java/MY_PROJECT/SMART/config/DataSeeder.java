@@ -1,11 +1,16 @@
 package MY_PROJECT.SMART.config;
 
 import MY_PROJECT.SMART.model.Ruangan;
+import MY_PROJECT.SMART.model.User;
 import MY_PROJECT.SMART.repository.RuanganRepository;
+import MY_PROJECT.SMART.repository.UserRepository;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,9 +19,30 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final RuanganRepository ruanganRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String@NonNull ... args) throws Exception {
+
+        //====== SEEDER USER ADMIN======
+        if (!userRepository.existsByUsername("admin")) {
+            System.out.println("🌱 Seeding user admin...");
+
+            User admin = new User();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole("ADMIN");
+            admin.setCreatedAt(LocalDateTime.now());
+            admin.setUpdatedAt(LocalDateTime.now());
+
+            userRepository.save(admin);
+            System.out.println("✅ Admin default berhasil dibuat! (username: admin, password: admin123)");
+        } else {
+            System.out.println("✅ User admin sudah ada, skip seeder admin.");
+        }
+
+        //======SEEDER RUANGAN======
         // Cek apakah data sudah ada
         if (ruanganRepository.count() > 0) {
             System.out.println("✅ Data ruangan sudah ada, skip seeder.");
