@@ -52,4 +52,16 @@ public class AuthController {
                     .body("{\"error\": \"" + e.getMessage() + "\"}");
         }
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        try {
+            // Token tidak perlu divalidasi atau di-blacklist
+            // Cukup return sukses, mobile yang hapus token
+            return ResponseEntity.ok("{\"message\": \"Logout berhasil\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
 }
