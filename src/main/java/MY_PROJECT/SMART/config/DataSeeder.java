@@ -4,10 +4,9 @@ import MY_PROJECT.SMART.model.Ruangan;
 import MY_PROJECT.SMART.model.User;
 import MY_PROJECT.SMART.repository.RuanganRepository;
 import MY_PROJECT.SMART.repository.UserRepository;
-<<<<<<< HEAD
+
 import lombok.NonNull;
-=======
->>>>>>> a1feb77f394ea77afbd73ffc65231cd006b520e1
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,23 +21,11 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private final RuanganRepository ruanganRepository;
-<<<<<<< HEAD
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void run(String@NonNull ... args) throws Exception {
-
-        //====== SEEDER USER ADMIN======
-        if (!userRepository.existsByUsername("admin")) {
-            System.out.println("🌱 Seeding user admin...");
-
-=======
-    private final UserRepository userRepository; // Tambahkan ini
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    @Override
-    public void run(String... args) throws Exception {
 
         // =========================================================
         // 1. SEEDING USER (Admin, Mahasiswa, Organisasi)
@@ -47,38 +34,30 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("🌱 Seeding data user...");
 
             // 1. Admin
->>>>>>> a1feb77f394ea77afbd73ffc65231cd006b520e1
             User admin = new User();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin123"));
             admin.setRole("ADMIN");
-<<<<<<< HEAD
             admin.setCreatedAt(LocalDateTime.now());
             admin.setUpdatedAt(LocalDateTime.now());
-
-            userRepository.save(admin);
-            System.out.println("✅ Admin default berhasil dibuat! (username: admin, password: admin123)");
-        } else {
-            System.out.println("✅ User admin sudah ada, skip seeder admin.");
-        }
-
-        //======SEEDER RUANGAN======
-        // Cek apakah data sudah ada
-=======
             userRepository.save(admin);
 
-            // 2. Mahasiswa (Tidak bisa booking)
+            //2. Mahasiswa (tidak bisa booking)
             User mahasiswa = new User();
             mahasiswa.setUsername("budi123");
             mahasiswa.setPassword(passwordEncoder.encode("rahasia123"));
             mahasiswa.setRole("MAHASISWA");
+            mahasiswa.setCreatedAt(LocalDateTime.now());
+            mahasiswa.setUpdatedAt(LocalDateTime.now());
             userRepository.save(mahasiswa);
 
-            // 3. Organisasi (Bisa booking)
+            //3. Organisasi (Bisa Booking)
             User organisasi = new User();
             organisasi.setUsername("himakom");
             organisasi.setPassword(passwordEncoder.encode("himakom123"));
             organisasi.setRole("ORGANISASI");
+            organisasi.setCreatedAt(LocalDateTime.now());
+            organisasi.setUpdatedAt(LocalDateTime.now());
             userRepository.save(organisasi);
 
             System.out.println("✅ User berhasil di-seed: admin (ADMIN), budi123 (MAHASISWA), himakom (ORGANISASI)");
@@ -86,11 +65,10 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("✅ Data user sudah ada, skip seeder.");
         }
 
-
         // =========================================================
         // 2. SEEDING RUANGAN (Zona B Lantai 2)
         // =========================================================
->>>>>>> a1feb77f394ea77afbd73ffc65231cd006b520e1
+
         if (ruanganRepository.count() > 0) {
             System.out.println("✅ Data ruangan sudah ada, skip seeder.");
             return;
