@@ -20,85 +20,46 @@ public class UserController {
 
     // GET semua user (WAJIB PAKE TOKEN!)
     @GetMapping
-    public ResponseEntity<?> getAllUsers(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<List<User>> getAllUsers(@RequestHeader("Authorization") String authHeader) {
         // Cek token
         String token = authHeader.substring(7); // Hapus "Bearer "
         String username = jwtService.extractUsername(token);
-
-        // Validasi token
-        if (!jwtService.validateToken(token, username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Token tidak valid atau kadaluarsa\"}");
+        //valid token
+        jwtService.validateToken(token, username);
+            return ResponseEntity.ok(userService.getAllUsers());
         }
 
-        return ResponseEntity.ok(userService.getAllUsers());
-    }
 
     // GET user by ID (WAJIB PAKE TOKEN!)
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<User> getUserById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         // Cek token
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
-
-        if (!jwtService.validateToken(token, username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Token tidak valid atau kadaluarsa\"}");
+        jwtService.validateToken(token, username);
+            return ResponseEntity.ok(userService.getUserById(id));
         }
 
-        try {
-            // Kita belum ada metode getById di service, jadi kita pake alternatif
-            List<User> users = userService.getAllUsers();
-            User user = users.stream()
-                    .filter(u -> u.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
-            return ResponseEntity.ok(user);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("{\"error\": \"" + e.getMessage() + "\"}");
-        }
-    }
 
     // POST buat user baru (WAJIB PAKE TOKEN!)
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody User user, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<User> createUser(@RequestBody User user, @RequestHeader("Authorization") String authHeader) {
         // Cek token
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
-
-        if (!jwtService.validateToken(token, username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Token tidak valid atau kadaluarsa\"}");
+        jwtService.validateToken(token, username);
+            return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
         }
-
-        try {
-            User newUser = userService.createUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("{\"error\": \"" + e.getMessage() + "\"}");
-        }
-    }
 
     // DELETE user (WAJIB PAKE TOKEN!)
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         // Cek token
         String token = authHeader.substring(7);
         String username = jwtService.extractUsername(token);
-
-        if (!jwtService.validateToken(token, username)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("{\"error\": \"Token tidak valid atau kadaluarsa\"}");
-        }
-
-        try {
-            userService.deleteUser(id);
+        jwtService.validateToken(token, username);
+        userService.deleteUser(id);
             return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+
         }
     }
-}
