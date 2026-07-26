@@ -11,7 +11,7 @@ Backend API untuk aplikasi peminjaman ruangan berbasis Spring Boot.
 |------|----------|----------|
 | Admin | admin | admin123 |
 | Mahasiswa | budi123 | rahasia123 |
-| Organisasi | himafor | himafor123 |
+| Organisasi | himakom | himakom123 |
 
 ## Dokumentasi API
 - Swagger: `https://smartspace-gacor.up.railway.app/swagger-ui/index.html`
