@@ -5,7 +5,6 @@ import MY_PROJECT.SMART.model.User;
 import MY_PROJECT.SMART.repository.RuanganRepository;
 import MY_PROJECT.SMART.repository.UserRepository;
 
-import lombok.NonNull;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -25,7 +24,7 @@ public class DataSeeder implements CommandLineRunner {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public void run(String@NonNull ... args) throws Exception {
+    public void run(String... args) throws Exception {
 
         // =========================================================
         // 1. SEEDING USER (Admin, Mahasiswa, Organisasi)
@@ -52,18 +51,64 @@ public class DataSeeder implements CommandLineRunner {
             userRepository.save(mahasiswa);
 
             //3. Organisasi (Bisa Booking)
-            User organisasi = new User();
-            organisasi.setUsername("himakom");
-            organisasi.setPassword(passwordEncoder.encode("himakom123"));
-            organisasi.setRole("ORGANISASI");
-            organisasi.setCreatedAt(LocalDateTime.now());
-            organisasi.setUpdatedAt(LocalDateTime.now());
-            userRepository.save(organisasi);
+            //himafor
+            User organisasi1 = new User();
+            organisasi1.setUsername("himafor");
+            organisasi1.setPassword(passwordEncoder.encode("himafor123"));
+            organisasi1.setRole("ORGANISASI");
+            organisasi1.setCreatedAt(LocalDateTime.now());
+            organisasi1.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi1);
 
-            System.out.println("✅ User berhasil di-seed: admin (ADMIN), budi123 (MAHASISWA), himakom (ORGANISASI)");
-        } else {
-            System.out.println("✅ Data user sudah ada, skip seeder.");
-        }
+            //himatikro
+            User organisasi2 = new User();
+            organisasi2.setUsername("himatikro");
+            organisasi2.setPassword(passwordEncoder.encode("himatikro123"));
+            organisasi2.setRole("ORGANISASI");
+            organisasi2.setCreatedAt(LocalDateTime.now());
+            organisasi2.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi2);
+
+            //hmtm
+            User organisasi3 = new User();
+            organisasi3.setUsername("hmtm");
+            organisasi3.setPassword(passwordEncoder.encode("hmtm123"));
+            organisasi3.setRole("ORGANISASI");
+            organisasi3.setCreatedAt(LocalDateTime.now());
+            organisasi3.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi3);
+
+            //hmti
+            User organisasi4 = new User();
+            organisasi4.setUsername("hmti");
+            organisasi4.setPassword(passwordEncoder.encode("hmti123"));
+            organisasi4.setRole("ORGANISASI");
+            organisasi4.setCreatedAt(LocalDateTime.now());
+            organisasi4.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi4);
+
+            //hma
+            User organisasi5 = new User();
+            organisasi5.setUsername("hma");
+            organisasi5.setPassword(passwordEncoder.encode("hma123"));
+            organisasi5.setRole("ORGANISASI");
+            organisasi5.setCreatedAt(LocalDateTime.now());
+            organisasi5.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi5);
+
+            //hmrs
+            User organisasi6 = new User();
+            organisasi6.setUsername("hmrs");
+            organisasi6.setPassword(passwordEncoder.encode("hmrs123"));
+            organisasi6.setRole("ORGANISASI");
+            organisasi6.setCreatedAt(LocalDateTime.now());
+            organisasi6.setUpdatedAt(LocalDateTime.now());
+            userRepository.save(organisasi6);
+
+        System.out.println("✅ User berhasil di-seed: admin (ADMIN), budi123 (MAHASISWA), himafor (ORGANISASI), himatikro (ORGANISASI), hmtm (ORGANISASI), hmti (ORGANISASI), hma (ORGANISASI), hmrs (ORGANISASI)");
+} else {
+        System.out.println("✅ Data user sudah ada, skip seeder.");
+    }
 
         // =========================================================
         // 2. SEEDING RUANGAN (Zona B Lantai 2)
